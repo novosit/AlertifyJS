@@ -77,7 +77,7 @@
             if (instance && instance.isModal()) {
                 // determine reset target to enable forward/backward tab cycle.
                 var resetTarget, target = event.srcElement || event.target;
-                var lastResetElement = target === instance.elements.reset[1] || (instance.__internal.buttons.length === 0 && target === document.body);
+                var lastResetElement = target === instance.elements.reset[1] || (instance.__internal.buttons.length === 0 && target === window.document.body);
 
                 // if last reset link, then go to maximize or close
                 if (lastResetElement) {

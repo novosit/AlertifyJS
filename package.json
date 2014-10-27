@@ -13,6 +13,7 @@
     "javascript framework",
     "pretty dialogs"
   ],
+  "dojoBuild": "profile.build.js",
   "author": "Mohammad Younes <Mohammad@alertifyjs.com> (http://alertifyjs.com)",
   "bugs": {
     "url": "https://github.com/MohammadYounes/AlertifyJS/issues"

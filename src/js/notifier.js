@@ -289,7 +289,7 @@
                 //ensure notifier init
                 initialize(this);
                 //create new notification message
-                var div = document.createElement('div');
+                var div = window.document.createElement('div');
                 div.className = classes.message + ((typeof type === 'string' && type !== '') ? ' ajs-' + type : '');
                 return create(div, callback);
             },

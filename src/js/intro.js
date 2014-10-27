@@ -87,7 +87,7 @@
      * @return {Boolean} True if the document is RTL, false otherwise.
      */
     function isRightToLeft(){
-        return window.getComputedStyle(document.body).direction === 'rtl';
+        return window.getComputedStyle(window.document.body).direction === 'rtl';
     }
     /**
      * [Helper]  Get the document current scrollTop
@@ -95,7 +95,7 @@
      * @return {Number} current document scrollTop value
      */
     function getScrollTop(){
-        return ((document.documentElement && document.documentElement.scrollTop) || document.body.scrollTop);
+        return ((window.document.documentElement && window.document.documentElement.scrollTop) || window.document.body.scrollTop);
     }
 
     /**
@@ -104,5 +104,5 @@
      * @return {Number} current document scrollLeft value
      */
     function getScrollLeft(){
-        return ((document.documentElement && document.documentElement.scrollLeft) || document.body.scrollLeft);
+        return ((window.document.documentElement && window.document.documentElement.scrollLeft) || window.document.body.scrollLeft);
     }

@@ -44,10 +44,10 @@
             var isRTL = isRightToLeft();
             if (isRTL) {
                 // reverse X 
-                X = document.body.offsetWidth - X;
+                X = window.document.body.offsetWidth - X;
                 // if has a starting left, calculate offsetRight
                 if (!isNaN(startingLeft)) {
-                    offsetLeft = document.body.offsetWidth - offsetLeft - element.offsetWidth;
+                    offsetLeft = window.document.body.offsetWidth - offsetLeft - element.offsetWidth;
                 }
             }
 
@@ -106,7 +106,7 @@
                         element.style.minWidth = (minWidth = element.offsetWidth) + 'px';
                     }
                     element.style.maxWidth = 'none';
-                    addClass(document.body, classes.noSelection);
+                    addClass(window.document.body, classes.noSelection);
                     return false;
                 }
             }
@@ -143,7 +143,7 @@
         function endResize() {
             if (resizable) {
                 resizable = null;
-                removeClass(document.body, classes.noSelection);
+                removeClass(window.document.body, classes.noSelection);
                 cancelClick = true;
             }
         }

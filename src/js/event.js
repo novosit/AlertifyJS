@@ -10,11 +10,11 @@
      * @return   {Function}
      */
     var on = (function () {
-        if (document.addEventListener) {
+        if (window.document &&  window.document.addEventListener) {
             return function (el, event, fn, useCapture) {
                 el.addEventListener(event, fn, useCapture === true);
             };
-        } else if (document.attachEvent) {
+        } else if (window.document && window.document.attachEvent) {
             return function (el, event, fn) {
                 el.attachEvent('on' + event, fn);
             };
@@ -33,11 +33,11 @@
      * @return   {Function}
      */
     var off = (function () {
-        if (document.removeEventListener) {
+        if (window.document.removeEventListener) {
             return function (el, event, fn, useCapture) {
                 el.removeEventListener(event, fn, useCapture === true);
             };
-        } else if (document.detachEvent) {
+        } else if (window.document.detachEvent) {
             return function (el, event, fn) {
                 el.detachEvent('on' + event, fn);
             };
@@ -72,7 +72,7 @@
         };
 
         for (t in transitions) {
-            if (document.documentElement.style[t] !== undefined) {
+            if (window.document.documentElement.style[t] !== undefined) {
                 type = transitions[t];
                 supported = true;
                 break;

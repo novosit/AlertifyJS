@@ -69,7 +69,7 @@
                 if(null === reflow){
                     // set tabindex attribute on body element this allows script to give it
                     // focus after the dialog is closed
-                    document.body.setAttribute( 'tabindex', '0' );
+                    window.document.body.setAttribute( 'tabindex', '0' );
                 }
 				
                 //get dialog buttons/focus setup
@@ -104,7 +104,7 @@
                      *
                      * @type {Node}
                      */
-                    activeElement:document.body,
+                    activeElement:window.document.body,
                     timerIn:undefined,
                     timerOut:undefined,
                     buttons: setup.buttons || [],
@@ -140,7 +140,7 @@
                                 
                 var elements = {};
                 //root node
-                elements.root = document.createElement('div');
+                elements.root = window.document.createElement('div');
                 
                 elements.root.className = classes.base + ' ' + classes.hidden + ' ';
 				
@@ -258,7 +258,7 @@
             }
             
             //add to the end of the DOM tree.
-            document.body.appendChild(instance.elements.root);
+            window.document.body.appendChild(instance.elements.root);
         }
 
         /**
@@ -275,10 +275,10 @@
             }
             if(requiresNoOverflow === 0){
                 //last open modal or last maximized one
-                removeClass(document.body, classes.noOverflow);
-            }else if(requiresNoOverflow > 0 && document.body.className.indexOf(classes.noOverflow) < 0){
+                removeClass(window.document.body, classes.noOverflow);
+            }else if(requiresNoOverflow > 0 && window.document.body.className.indexOf(classes.noOverflow) < 0){
                 //first open modal or first maximized one
-                addClass(document.body, classes.noOverflow);
+                addClass(window.document.body, classes.noOverflow);
             }
         }
 		
@@ -370,8 +370,8 @@
             }
 			
             // Bring to front by making it the last child.
-            if(document.body.lastChild !== instance.elements.root){
-                document.body.appendChild(instance.elements.root);
+            if(window.document.body.lastChild !== instance.elements.root){
+                window.document.body.appendChild(instance.elements.root);
                 //also make sure its at the end of the list
                 openDialogs.splice(openDialogs.indexOf(instance),1);
                 openDialogs.push(instance);

@@ -143,7 +143,7 @@
 
                     // save last focused element
                     if(alertify.defaults.maintainFocus){
-                        this.__internal.activeElement = document.activeElement;
+                        this.__internal.activeElement = window.document.activeElement;
                     }
 
                     //allow custom dom manipulation updates before showing the dialog.

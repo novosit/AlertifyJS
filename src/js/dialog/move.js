@@ -60,7 +60,7 @@
                     }
                     moveElement(eventSrc, element);
 
-                    addClass(document.body, classes.noSelection);
+                    addClass(window.document.body, classes.noSelection);
                     return false;
                 }
             }
@@ -97,7 +97,7 @@
         function endMove() {
             if (movable) {
                 movable = null;
-                removeClass(document.body, classes.noSelection);
+                removeClass(window.document.body, classes.noSelection);
             }
         }
 
