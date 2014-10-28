@@ -9,8 +9,13 @@
      *	alertify.prompt(title, message, value, onok, oncancel);
      */
     alertify.dialog('prompt', function () {
-        var input = window.document.createElement('INPUT');
-        var p = window.document.createElement('P');
+        var input,
+            p;
+        if (window.document) {
+            input = window.document.createElement('INPUT');
+            p = window.document.createElement('P');
+        }
+
         return {
             main: function (_title, _message, _value, _onok, _oncancel) {
                 var title, message, value, onok, oncancel;

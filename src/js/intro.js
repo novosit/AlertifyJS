@@ -95,7 +95,15 @@
      * @return {Number} current document scrollTop value
      */
     function getScrollTop(){
-        return ((window.document.documentElement && window.document.documentElement.scrollTop) || window.document.body.scrollTop);
+        if (window.document && window.document.documentElement ) {
+            return window.document.documentElement.scrollTop;
+        }
+        else if (window.document && window.document.body) {
+            return window.document.body.scrollTop;
+        }
+        else {
+            return 0;
+        }
     }
 
     /**
@@ -104,5 +112,13 @@
      * @return {Number} current document scrollLeft value
      */
     function getScrollLeft(){
-        return ((window.document.documentElement && window.document.documentElement.scrollLeft) || window.document.body.scrollLeft);
+        if (window.document && window.document.documentElement ) {
+            return window.document.documentElement.scrollLeft;
+        }
+        else if (window.document && window.document.body) {
+            return window.document.body.scrollLeft;
+        }
+        else {
+            return 0;
+        }
     }

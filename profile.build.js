@@ -7,7 +7,7 @@ var profile = {
 			return /build\/alertify\.js/.test(filename);
 		},
 		ignore: function (filename) {
-			return /docpad/.test(filename);
+			return /node_modules/.test(filename) || /docpad/.test(filename);
 		}
 	}
 };

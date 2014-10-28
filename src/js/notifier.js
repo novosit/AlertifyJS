@@ -17,7 +17,9 @@
          * 
          */
         function initialize(instance) {
-
+            if (!window.document) {
+                return;
+            }
             if (!instance.__internal) {
                 instance.__internal = {
                     position: alertify.defaults.notifier.position,
@@ -88,6 +90,9 @@
             }
 
             function initialize(instance) {
+                if (!window.document) {
+                    return;
+                }
                 if (!instance.__internal) {
                     instance.__internal = {
                         pushed: false,
@@ -289,9 +294,11 @@
                 //ensure notifier init
                 initialize(this);
                 //create new notification message
-                var div = window.document.createElement('div');
-                div.className = classes.message + ((typeof type === 'string' && type !== '') ? ' ajs-' + type : '');
-                return create(div, callback);
+                if (window.document) {
+                    var div = window.document.createElement('div');
+                    div.className = classes.message + ((typeof type === 'string' && type !== '') ? ' ajs-' + type : '');
+                    return create(div, callback);
+                }
             },
             /**
              * Dismisses all open notifications.

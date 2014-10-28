@@ -33,11 +33,11 @@
      * @return   {Function}
      */
     var off = (function () {
-        if (window.document.removeEventListener) {
+        if (window.document && window.document.removeEventListener) {
             return function (el, event, fn, useCapture) {
                 el.removeEventListener(event, fn, useCapture === true);
             };
-        } else if (window.document.detachEvent) {
+        } else if (window.document && window.document.detachEvent) {
             return function (el, event, fn) {
                 el.detachEvent('on' + event, fn);
             };
@@ -72,7 +72,7 @@
         };
 
         for (t in transitions) {
-            if (window.document.documentElement.style[t] !== undefined) {
+            if (window.document && window.document.documentElement && (window.document.documentElement.style[t] !== undefined)) {
                 type = transitions[t];
                 supported = true;
                 break;

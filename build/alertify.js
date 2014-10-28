@@ -106,7 +106,15 @@
      * @return {Number} current document scrollTop value
      */
     function getScrollTop(){
-        return ((window.document.documentElement && window.document.documentElement.scrollTop) || window.document.body.scrollTop);
+        if (window.document && window.document.documentElement ) {
+            return window.document.documentElement.scrollTop;
+        }
+        else if (window.document && window.document.body) {
+            return window.document.body.scrollTop;
+        }
+        else {
+            return 0;
+        }
     }
 
     /**
@@ -115,7 +123,15 @@
      * @return {Number} current document scrollLeft value
      */
     function getScrollLeft(){
-        return ((window.document.documentElement && window.document.documentElement.scrollLeft) || window.document.body.scrollLeft);
+        if (window.document && window.document.documentElement ) {
+            return window.document.documentElement.scrollLeft;
+        }
+        else if (window.document && window.document.body) {
+            return window.document.body.scrollLeft;
+        }
+        else {
+            return 0;
+        }
     }
 
     /**
@@ -153,11 +169,11 @@
      * @return   {Function}
      */
     var off = (function () {
-        if (window.document.removeEventListener) {
+        if (window.document && window.document.removeEventListener) {
             return function (el, event, fn, useCapture) {
                 el.removeEventListener(event, fn, useCapture === true);
             };
-        } else if (window.document.detachEvent) {
+        } else if (window.document && window.document.detachEvent) {
             return function (el, event, fn) {
                 el.detachEvent('on' + event, fn);
             };
@@ -192,7 +208,7 @@
         };
 
         for (t in transitions) {
-            if (window.document.documentElement.style[t] !== undefined) {
+            if (window.document && window.document.documentElement && (window.document.documentElement.style[t] !== undefined)) {
                 type = transitions[t];
                 supported = true;
                 break;
@@ -248,7 +264,7 @@
             //dummy variable, used to trigger dom reflow.
             reflow = null,
             //condition for detecting safari
-            isSafari = window.navigator.userAgent.indexOf('Safari') > -1 && window.navigator.userAgent.indexOf('Chrome') < 0,
+            isSafari = window.navigator && (window.navigator.userAgent.indexOf('Safari') > -1 && window.navigator.userAgent.indexOf('Chrome') < 0),
             //dialog building blocks
             templates = {
                 dimmer:'<div class="ajs-dimmer"></div>',
@@ -297,7 +313,9 @@
          * @return	{Number}	The total count of currently open modals.
          */
         function initialize(instance){
-            
+            if (!window.document) {
+                return;
+            }
             if(!instance.__internal){
 				
                 //no need to expose init after this.
@@ -2110,7 +2128,9 @@
          * 
          */
         function initialize(instance) {
-
+            if (!window.document) {
+                return;
+            }
             if (!instance.__internal) {
                 instance.__internal = {
                     position: alertify.defaults.notifier.position,
@@ -2181,6 +2201,9 @@
             }
 
             function initialize(instance) {
+                if (!window.document) {
+                    return;
+                }
                 if (!instance.__internal) {
                     instance.__internal = {
                         pushed: false,
@@ -2382,9 +2405,11 @@
                 //ensure notifier init
                 initialize(this);
                 //create new notification message
-                var div = window.document.createElement('div');
-                div.className = classes.message + ((typeof type === 'string' && type !== '') ? ' ajs-' + type : '');
-                return create(div, callback);
+                if (window.document) {
+                    var div = window.document.createElement('div');
+                    div.className = classes.message + ((typeof type === 'string' && type !== '') ? ' ajs-' + type : '');
+                    return create(div, callback);
+                }
             },
             /**
              * Dismisses all open notifications.
@@ -2455,12 +2480,12 @@
          *
          * @name {String} name The dialog name.
          * @Factory {Function} Factory a function resposible for creating dialog prototype.
-         * @transient {Boolean} transient True to create a new dialog instance each time the dialog is invoked, false otherwise.
+         * @bTransient {Boolean} bTransient True to create a new dialog instance each time the dialog is invoked, false otherwise.
          * @base {String} base the name of another dialog to inherit from.
          *
          * @return {Object} The dialog definition.
          */
-        function register(name, Factory, transient, base) {
+        function register(name, Factory, bTransient, base) {
             var definition = {
                 dialog: null,
                 factory: Factory
@@ -2474,11 +2499,12 @@
                 };
             }
 
-            if (!transient) {
+            if (!bTransient) {
                 //create a new definition based on dialog
                 definition.dialog = extend(new definition.factory(), dialog);
             }
-            return dialogs[name] = definition;
+            dialogs[name] = definition;
+            return dialogs[name];
         }
 
         return {
@@ -2496,7 +2522,7 @@
              * @param {Boolean}     Indicates whether to create a singleton or transient dialog.
              * @param {String}      The name of the base type to inherit from.
              */
-            dialog: function (name, Factory, transient, base) {
+            dialog: function (name, Factory, bTransient, base) {
 
                 // get request, create a new instance and return it.
                 if (typeof Factory !== 'function') {
@@ -2508,9 +2534,9 @@
                 }
 
                 // register the dialog
-                var definition = register(name, Factory, transient, base);
+                var definition = register(name, Factory, bTransient, base);
 
-                if (transient) {
+                if (bTransient) {
 
                     // make it public
                     this[name] = function () {
@@ -2958,8 +2984,13 @@
      *	alertify.prompt(title, message, value, onok, oncancel);
      */
     alertify.dialog('prompt', function () {
-        var input = window.document.createElement('INPUT');
-        var p = window.document.createElement('P');
+        var input,
+            p;
+        if (window.document) {
+            input = window.document.createElement('INPUT');
+            p = window.document.createElement('P');
+        }
+
         return {
             main: function (_title, _message, _value, _onok, _oncancel) {
                 var title, message, value, onok, oncancel;

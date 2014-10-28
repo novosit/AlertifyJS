@@ -50,12 +50,12 @@
          *
          * @name {String} name The dialog name.
          * @Factory {Function} Factory a function resposible for creating dialog prototype.
-         * @transient {Boolean} transient True to create a new dialog instance each time the dialog is invoked, false otherwise.
+         * @bTransient {Boolean} bTransient True to create a new dialog instance each time the dialog is invoked, false otherwise.
          * @base {String} base the name of another dialog to inherit from.
          *
          * @return {Object} The dialog definition.
          */
-        function register(name, Factory, transient, base) {
+        function register(name, Factory, bTransient, base) {
             var definition = {
                 dialog: null,
                 factory: Factory
@@ -69,11 +69,12 @@
                 };
             }
 
-            if (!transient) {
+            if (!bTransient) {
                 //create a new definition based on dialog
                 definition.dialog = extend(new definition.factory(), dialog);
             }
-            return dialogs[name] = definition;
+            dialogs[name] = definition;
+            return dialogs[name];
         }
 
         return {
@@ -91,7 +92,7 @@
              * @param {Boolean}     Indicates whether to create a singleton or transient dialog.
              * @param {String}      The name of the base type to inherit from.
              */
-            dialog: function (name, Factory, transient, base) {
+            dialog: function (name, Factory, bTransient, base) {
 
                 // get request, create a new instance and return it.
                 if (typeof Factory !== 'function') {
@@ -103,9 +104,9 @@
                 }
 
                 // register the dialog
-                var definition = register(name, Factory, transient, base);
+                var definition = register(name, Factory, bTransient, base);
 
-                if (transient) {
+                if (bTransient) {
 
                     // make it public
                     this[name] = function () {

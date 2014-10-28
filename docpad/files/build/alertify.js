@@ -98,7 +98,7 @@
      * @return {Boolean} True if the document is RTL, false otherwise.
      */
     function isRightToLeft(){
-        return window.getComputedStyle(document.body).direction === 'rtl';
+        return window.getComputedStyle(window.document.body).direction === 'rtl';
     }
     /**
      * [Helper]  Get the document current scrollTop
@@ -106,7 +106,15 @@
      * @return {Number} current document scrollTop value
      */
     function getScrollTop(){
-        return ((document.documentElement && document.documentElement.scrollTop) || document.body.scrollTop);
+        if (window.document && window.document.documentElement ) {
+            return window.document.documentElement.scrollTop;
+        }
+        else if (window.document && window.document.body) {
+            return window.document.body.scrollTop;
+        }
+        else {
+            return 0;
+        }
     }
 
     /**
@@ -115,7 +123,15 @@
      * @return {Number} current document scrollLeft value
      */
     function getScrollLeft(){
-        return ((document.documentElement && document.documentElement.scrollLeft) || document.body.scrollLeft);
+        if (window.document && window.document.documentElement ) {
+            return window.document.documentElement.scrollLeft;
+        }
+        else if (window.document && window.document.body) {
+            return window.document.body.scrollLeft;
+        }
+        else {
+            return 0;
+        }
     }
 
     /**
@@ -130,11 +146,11 @@
      * @return   {Function}
      */
     var on = (function () {
-        if (document.addEventListener) {
+        if (window.document &&  window.document.addEventListener) {
             return function (el, event, fn, useCapture) {
                 el.addEventListener(event, fn, useCapture === true);
             };
-        } else if (document.attachEvent) {
+        } else if (window.document && window.document.attachEvent) {
             return function (el, event, fn) {
                 el.attachEvent('on' + event, fn);
             };
@@ -153,11 +169,11 @@
      * @return   {Function}
      */
     var off = (function () {
-        if (document.removeEventListener) {
+        if (window.document && window.document.removeEventListener) {
             return function (el, event, fn, useCapture) {
                 el.removeEventListener(event, fn, useCapture === true);
             };
-        } else if (document.detachEvent) {
+        } else if (window.document && window.document.detachEvent) {
             return function (el, event, fn) {
                 el.detachEvent('on' + event, fn);
             };
@@ -192,7 +208,7 @@
         };
 
         for (t in transitions) {
-            if (document.documentElement.style[t] !== undefined) {
+            if (window.document && window.document.documentElement && (window.document.documentElement.style[t] !== undefined)) {
                 type = transitions[t];
                 supported = true;
                 break;
@@ -248,7 +264,7 @@
             //dummy variable, used to trigger dom reflow.
             reflow = null,
             //condition for detecting safari
-            isSafari = window.navigator.userAgent.indexOf('Safari') > -1 && window.navigator.userAgent.indexOf('Chrome') < 0,
+            isSafari = window.navigator && (window.navigator.userAgent.indexOf('Safari') > -1 && window.navigator.userAgent.indexOf('Chrome') < 0),
             //dialog building blocks
             templates = {
                 dimmer:'<div class="ajs-dimmer"></div>',
@@ -297,7 +313,9 @@
          * @return	{Number}	The total count of currently open modals.
          */
         function initialize(instance){
-            
+            if (!window.document) {
+                return;
+            }
             if(!instance.__internal){
 				
                 //no need to expose init after this.
@@ -308,7 +326,7 @@
                 if(null === reflow){
                     // set tabindex attribute on body element this allows script to give it
                     // focus after the dialog is closed
-                    document.body.setAttribute( 'tabindex', '0' );
+                    window.document.body.setAttribute( 'tabindex', '0' );
                 }
 				
                 //get dialog buttons/focus setup
@@ -343,7 +361,7 @@
                      *
                      * @type {Node}
                      */
-                    activeElement:document.body,
+                    activeElement:window.document.body,
                     timerIn:undefined,
                     timerOut:undefined,
                     buttons: setup.buttons || [],
@@ -379,7 +397,7 @@
                                 
                 var elements = {};
                 //root node
-                elements.root = document.createElement('div');
+                elements.root = window.document.createElement('div');
                 
                 elements.root.className = classes.base + ' ' + classes.hidden + ' ';
 				
@@ -497,7 +515,7 @@
             }
             
             //add to the end of the DOM tree.
-            document.body.appendChild(instance.elements.root);
+            window.document.body.appendChild(instance.elements.root);
         }
 
         /**
@@ -514,10 +532,10 @@
             }
             if(requiresNoOverflow === 0){
                 //last open modal or last maximized one
-                removeClass(document.body, classes.noOverflow);
-            }else if(requiresNoOverflow > 0 && document.body.className.indexOf(classes.noOverflow) < 0){
+                removeClass(window.document.body, classes.noOverflow);
+            }else if(requiresNoOverflow > 0 && window.document.body.className.indexOf(classes.noOverflow) < 0){
                 //first open modal or first maximized one
-                addClass(document.body, classes.noOverflow);
+                addClass(window.document.body, classes.noOverflow);
             }
         }
 		
@@ -609,8 +627,8 @@
             }
 			
             // Bring to front by making it the last child.
-            if(document.body.lastChild !== instance.elements.root){
-                document.body.appendChild(instance.elements.root);
+            if(window.document.body.lastChild !== instance.elements.root){
+                window.document.body.appendChild(instance.elements.root);
                 //also make sure its at the end of the list
                 openDialogs.splice(openDialogs.indexOf(instance),1);
                 openDialogs.push(instance);
@@ -1190,7 +1208,7 @@
             if (instance && instance.isModal()) {
                 // determine reset target to enable forward/backward tab cycle.
                 var resetTarget, target = event.srcElement || event.target;
-                var lastResetElement = target === instance.elements.reset[1] || (instance.__internal.buttons.length === 0 && target === document.body);
+                var lastResetElement = target === instance.elements.reset[1] || (instance.__internal.buttons.length === 0 && target === window.document.body);
 
                 // if last reset link, then go to maximize or close
                 if (lastResetElement) {
@@ -1343,7 +1361,7 @@
                     }
                     moveElement(eventSrc, element);
 
-                    addClass(document.body, classes.noSelection);
+                    addClass(window.document.body, classes.noSelection);
                     return false;
                 }
             }
@@ -1380,7 +1398,7 @@
         function endMove() {
             if (movable) {
                 movable = null;
-                removeClass(document.body, classes.noSelection);
+                removeClass(window.document.body, classes.noSelection);
             }
         }
 
@@ -1470,10 +1488,10 @@
             var isRTL = isRightToLeft();
             if (isRTL) {
                 // reverse X 
-                X = document.body.offsetWidth - X;
+                X = window.document.body.offsetWidth - X;
                 // if has a starting left, calculate offsetRight
                 if (!isNaN(startingLeft)) {
-                    offsetLeft = document.body.offsetWidth - offsetLeft - element.offsetWidth;
+                    offsetLeft = window.document.body.offsetWidth - offsetLeft - element.offsetWidth;
                 }
             }
 
@@ -1532,7 +1550,7 @@
                         element.style.minWidth = (minWidth = element.offsetWidth) + 'px';
                     }
                     element.style.maxWidth = 'none';
-                    addClass(document.body, classes.noSelection);
+                    addClass(window.document.body, classes.noSelection);
                     return false;
                 }
             }
@@ -1569,7 +1587,7 @@
         function endResize() {
             if (resizable) {
                 resizable = null;
-                removeClass(document.body, classes.noSelection);
+                removeClass(window.document.body, classes.noSelection);
                 cancelClick = true;
             }
         }
@@ -1646,20 +1664,20 @@
             if (openDialogs.length === 1) {
                 //global
                 on(window, 'resize', windowResize);
-                on(document.body, 'keyup', keyupHandler);
-                on(document.body, 'keydown', keydownHandler);
-                on(document.body, 'focus', onReset);
+                on(window.document.body, 'keyup', keyupHandler);
+                on(window.document.body, 'keydown', keydownHandler);
+                on(window.document.body, 'focus', onReset);
 
                 //move
-                on(document.body, 'mousemove', move);
-                on(document.body, 'touchmove', move);
-                on(document.body, 'mouseup', endMove);
-                on(document.body, 'touchend', endMove);
+                on(window.document.body, 'mousemove', move);
+                on(window.document.body, 'touchmove', move);
+                on(window.document.body, 'mouseup', endMove);
+                on(window.document.body, 'touchend', endMove);
                 //resize
-                on(document.body, 'mousemove', resize);
-                on(document.body, 'touchmove', resize);
-                on(document.body, 'mouseup', endResize);
-                on(document.body, 'touchend', endResize);
+                on(window.document.body, 'mousemove', resize);
+                on(window.document.body, 'touchmove', resize);
+                on(window.document.body, 'mouseup', endResize);
+                on(window.document.body, 'touchend', endResize);
             }
 
             // common events
@@ -1701,15 +1719,15 @@
             if (openDialogs.length === 1) {
                 //global
                 off(window, 'resize', windowResize);
-                off(document.body, 'keyup', keyupHandler);
-                off(document.body, 'keydown', keydownHandler);
-                off(document.body, 'focus', onReset);
+                off(window.document.body, 'keyup', keyupHandler);
+                off(window.document.body, 'keydown', keydownHandler);
+                off(window.document.body, 'focus', onReset);
                 //move
-                off(document.body, 'mousemove', move);
-                off(document.body, 'mouseup', endMove);
+                off(window.document.body, 'mousemove', move);
+                off(window.document.body, 'mouseup', endMove);
                 //resize
-                off(document.body, 'mousemove', resize);
-                off(document.body, 'mouseup', endResize);
+                off(window.document.body, 'mousemove', resize);
+                off(window.document.body, 'mouseup', endResize);
             }
 
             // common events
@@ -1978,7 +1996,7 @@
 
                     // save last focused element
                     if(alertify.defaults.maintainFocus){
-                        this.__internal.activeElement = document.activeElement;
+                        this.__internal.activeElement = window.document.activeElement;
                     }
 
                     //allow custom dom manipulation updates before showing the dialog.
@@ -2110,7 +2128,9 @@
          * 
          */
         function initialize(instance) {
-
+            if (!window.document) {
+                return;
+            }
             if (!instance.__internal) {
                 instance.__internal = {
                     position: alertify.defaults.notifier.position,
@@ -2181,6 +2201,9 @@
             }
 
             function initialize(instance) {
+                if (!window.document) {
+                    return;
+                }
                 if (!instance.__internal) {
                     instance.__internal = {
                         pushed: false,
@@ -2382,9 +2405,11 @@
                 //ensure notifier init
                 initialize(this);
                 //create new notification message
-                var div = document.createElement('div');
-                div.className = classes.message + ((typeof type === 'string' && type !== '') ? ' ajs-' + type : '');
-                return create(div, callback);
+                if (window.document) {
+                    var div = window.document.createElement('div');
+                    div.className = classes.message + ((typeof type === 'string' && type !== '') ? ' ajs-' + type : '');
+                    return create(div, callback);
+                }
             },
             /**
              * Dismisses all open notifications.
@@ -2455,12 +2480,12 @@
          *
          * @name {String} name The dialog name.
          * @Factory {Function} Factory a function resposible for creating dialog prototype.
-         * @transient {Boolean} transient True to create a new dialog instance each time the dialog is invoked, false otherwise.
+         * @bTransient {Boolean} bTransient True to create a new dialog instance each time the dialog is invoked, false otherwise.
          * @base {String} base the name of another dialog to inherit from.
          *
          * @return {Object} The dialog definition.
          */
-        function register(name, Factory, transient, base) {
+        function register(name, Factory, bTransient, base) {
             var definition = {
                 dialog: null,
                 factory: Factory
@@ -2474,11 +2499,12 @@
                 };
             }
 
-            if (!transient) {
+            if (!bTransient) {
                 //create a new definition based on dialog
                 definition.dialog = extend(new definition.factory(), dialog);
             }
-            return dialogs[name] = definition;
+            dialogs[name] = definition;
+            return dialogs[name];
         }
 
         return {
@@ -2496,7 +2522,7 @@
              * @param {Boolean}     Indicates whether to create a singleton or transient dialog.
              * @param {String}      The name of the base type to inherit from.
              */
-            dialog: function (name, Factory, transient, base) {
+            dialog: function (name, Factory, bTransient, base) {
 
                 // get request, create a new instance and return it.
                 if (typeof Factory !== 'function') {
@@ -2508,9 +2534,9 @@
                 }
 
                 // register the dialog
-                var definition = register(name, Factory, transient, base);
+                var definition = register(name, Factory, bTransient, base);
 
-                if (transient) {
+                if (bTransient) {
 
                     // make it public
                     this[name] = function () {
@@ -2958,8 +2984,13 @@
      *	alertify.prompt(title, message, value, onok, oncancel);
      */
     alertify.dialog('prompt', function () {
-        var input = document.createElement('INPUT');
-        var p = document.createElement('P');
+        var input,
+            p;
+        if (window.document) {
+            input = window.document.createElement('INPUT');
+            p = window.document.createElement('P');
+        }
+
         return {
             main: function (_title, _message, _value, _onok, _oncancel) {
                 var title, message, value, onok, oncancel;
