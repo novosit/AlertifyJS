@@ -3138,4 +3138,4 @@
         window.alertify = alertify;
     }
 
-} ( this ) );
+} ( (typeof(window) !== 'undefined') ? window : this ));
